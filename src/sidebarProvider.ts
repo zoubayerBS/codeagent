@@ -9,7 +9,7 @@ import OpenAI from "openai";
 import { join } from "path";
 import "dotenv/config";
 
-export class CodeAgentSidebarProvider implements vscode.WebviewViewProvider {
+export class CodexiaSidebarProvider implements vscode.WebviewViewProvider {
     _view?: vscode.WebviewView;
     _doc?: vscode.TextDocument;
     private _client?: Client;
@@ -56,14 +56,14 @@ export class CodeAgentSidebarProvider implements vscode.WebviewViewProvider {
         }
 
         // Get configuration from VS Code Settings
-        const config = vscode.workspace.getConfiguration("codeagent.llm");
+        const config = vscode.workspace.getConfiguration("codexia.llm");
         let apiKey = config.get<string>("apiKey");
         const baseURL = config.get<string>("baseUrl") || "https://router.huggingface.co/v1";
         const model = config.get<string>("model") || "meta-llama/Llama-3.3-70B-Instruct";
 
         if (!apiKey) {
             const selection = await vscode.window.showWarningMessage(
-                "CodeAgent API Key is missing. Please set it in Settings or provide it now.",
+                "Codexia API Key is missing. Please set it in Settings or provide it now.",
                 "Enter API Key",
                 "Open Settings"
             );
@@ -82,7 +82,7 @@ export class CodeAgentSidebarProvider implements vscode.WebviewViewProvider {
                     return;
                 }
             } else if (selection === "Open Settings") {
-                vscode.commands.executeCommand("workbench.action.openSettings", "codeagent.llm.apiKey");
+                vscode.commands.executeCommand("workbench.action.openSettings", "codexia.llm.apiKey");
                 return;
             } else {
                 return;
@@ -203,11 +203,11 @@ export class CodeAgentSidebarProvider implements vscode.WebviewViewProvider {
 
     private async _handleUserMessage(userMessage: string) {
         // Reload config on every message in case it changed
-        const config = vscode.workspace.getConfiguration("codeagent.llm");
+        const config = vscode.workspace.getConfiguration("codexia.llm");
         const apiKey = config.get<string>("apiKey");
 
         if (!apiKey) {
-            this._view?.webview.postMessage({ type: "bot-message", message: "⚠️ API Key missing. Please set 'codeagent.llm.apiKey' in settings." });
+            this._view?.webview.postMessage({ type: "bot-message", message: "⚠️ API Key missing. Please set 'codexia.llm.apiKey' in settings." });
             return;
         }
 

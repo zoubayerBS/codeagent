@@ -26,36 +26,36 @@
     "viewsContainers": {
       "activitybar": [
         {
-          "id": "codeagent-sidebar",
-          "title": "CodeAgent",
+          "id": "codexia-sidebar",
+          "title": "Codexia",
           "icon": "media/icon.svg"
         }
       ]
     },
     "views": {
-      "codeagent-sidebar": [
+      "codexia-sidebar": [
         {
           "type": "webview",
-          "id": "codeagent-view",
+          "id": "codexia-view",
           "name": "Chat",
           "icon": "media/icon.svg"
         }
       ]
     },
     "configuration": {
-      "title": "CodeAgent",
+      "title": "Codexia",
       "properties": {
-        "codeagent.llm.apiKey": {
+        "codexia.llm.apiKey": {
           "type": "string",
           "default": "",
           "description": "API Key for the LLM Provider (Hugging Face / OpenAI compatible)."
         },
-        "codeagent.llm.model": {
+        "codexia.llm.model": {
           "type": "string",
           "default": "meta-llama/Llama-3.3-70B-Instruct",
           "description": "Model ID to use."
         },
-        "codeagent.llm.baseUrl": {
+        "codexia.llm.baseUrl": {
           "type": "string",
           "default": "https://router.huggingface.co/v1",
           "description": "Base URL for the LLM API."
@@ -64,34 +64,34 @@
     },
     "commands": [
       {
-        "command": "codeagent.addSelectionToChat",
-        "title": "CodeAgent: Add Selection to Chat"
+        "command": "codexia.addSelectionToChat",
+        "title": "Codexia: Add Selection to Chat"
       },
       {
-        "command": "codeagent.addFileToChat",
-        "title": "CodeAgent: Add File to Chat"
+        "command": "codexia.addFileToChat",
+        "title": "Codexia: Add File to Chat"
       },
       {
-        "command": "codeagent.fixDiagnostics",
-        "title": "CodeAgent: Fix Errors/Warnings"
+        "command": "codexia.fixDiagnostics",
+        "title": "Codexia: Fix Errors/Warnings"
       }
     ],
     "menus": {
       "editor/context": [
         {
-          "command": "codeagent.addSelectionToChat",
-          "group": "codeagent-group@1",
+          "command": "codexia.addSelectionToChat",
+          "group": "codexia-group@1",
           "when": "editorHasSelection"
         },
         {
-          "command": "codeagent.fixDiagnostics",
-          "group": "codeagent-group@2"
+          "command": "codexia.fixDiagnostics",
+          "group": "codexia-group@2"
         }
       ],
       "explorer/context": [
         {
-          "command": "codeagent.addFileToChat",
-          "group": "codeagent-group@1"
+          "command": "codexia.addFileToChat",
+          "group": "codexia-group@1"
         }
       ]
     }

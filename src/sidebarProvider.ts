@@ -30,7 +30,7 @@ export class CodeAgentSidebarProvider implements vscode.WebviewViewProvider {
             this._messages = [
                 {
                     role: "system",
-                    content: `You are CodeAgent, an expert AI coding assistant. You possess a "Agentic" mindset, meaning you are proactive, capable, and autonomous.
+                    content: `You are Codexia, an expert AI coding assistant. You possess a "Agentic" mindset, meaning you are proactive, capable, and autonomous.
 
 **Your Goal**: Help the user solve complex coding tasks, debug issues, and build software.
 
@@ -131,7 +131,7 @@ export class CodeAgentSidebarProvider implements vscode.WebviewViewProvider {
                 },
             }));
 
-            console.log("CodeAgent: Connected and tools loaded.");
+            console.log("Codexia: Connected and tools loaded.");
         } catch (error) {
             console.error("CodeAgent Initialization Error:", error);
             vscode.window.showErrorMessage("Failed to connect to CodeAgent core.");
@@ -306,7 +306,7 @@ export class CodeAgentSidebarProvider implements vscode.WebviewViewProvider {
         <head>
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>CodeAgent</title>
+            <title>Codexia</title>
             <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
             <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
@@ -480,7 +480,7 @@ export class CodeAgentSidebarProvider implements vscode.WebviewViewProvider {
         <body>
             <div class="header">
                 <img src="${iconUri}" alt="Logo" />
-                <h3>CodeAgent</h3>
+                <h3>Codexia</h3>
                 <button id="new-chat-btn" title="New Chat">
                     <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
                     New Chat

@@ -1,9 +1,9 @@
-# Privacy Policy for CodeAgent
+# Privacy Policy for Codexia
 
 Last Updated: January 11, 2026
 
 ## 1. Data Collection
-**CodeAgent does not collect, store, or share any personal data.**
+**Codexia does not collect, store, or share any personal data.**
 
 We (the authors of CodeAgent) do not have access to your code, your chat history, or your API keys. All data processing happens locally on your machine or directly between your machine and the LLM provider you configure.
 

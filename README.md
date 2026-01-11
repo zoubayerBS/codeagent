@@ -1,6 +1,6 @@
-# CodeAgent for VS Code
+# Codexia for VS Code
 
-CodeAgent est un assistant de codage AI "Agentic" intégré directement dans VS Code. Contrairement aux simples chats, CodeAgent peut explorer votre projet, lire des fichiers, et effectuer des modifications réelles de manière proactive.
+Codexia est un assistant de codage AI "Agentic" intégré directement dans VS Code. Contrairement aux simples chats, CodeAgent peut explorer votre projet, lire des fichiers, et effectuer des modifications réelles de manière proactive.
 
 ![Demo](media/icon.png)
 

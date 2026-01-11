@@ -1,6 +1,6 @@
 {
-  "name": "codeagent-mcp",
-  "displayName": "CodeAgent",
+  "name": "codexia",
+  "displayName": "Codexia",
   "icon": "media/icon.png",
   "version": "1.0.0",
   "description": "AI Coding Assistant with Agentic capabilities (Read/Write/Search files) via MCP.",

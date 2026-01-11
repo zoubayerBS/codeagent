@@ -616,7 +616,8 @@ export class CodexiaSidebarProvider implements vscode.WebviewViewProvider {
 
                 sendBtn.addEventListener('click', sendMessage);
                 messageInput.addEventListener('keydown', (e) => {
-                    if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault();
                         sendMessage();
                     }
                 });

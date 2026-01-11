@@ -16,6 +16,7 @@ export class CodexiaSidebarProvider implements vscode.WebviewViewProvider {
     private _openai?: OpenAI;
     private _tools: any[] = [];
     private _messages: any[] = [];
+    private _selectedModel: string = "meta-llama/Llama-3.3-70B-Instruct";
 
     constructor(private readonly _extensionUri: vscode.Uri, private readonly _context: vscode.ExtensionContext) {
         this._initialize();
@@ -60,6 +61,7 @@ export class CodexiaSidebarProvider implements vscode.WebviewViewProvider {
         let apiKey = config.get<string>("apiKey");
         const baseURL = config.get<string>("baseUrl") || "https://router.huggingface.co/v1";
         const model = config.get<string>("model") || "meta-llama/Llama-3.3-70B-Instruct";
+        this._selectedModel = model;
 
         if (!apiKey) {
             const selection = await vscode.window.showWarningMessage(
@@ -107,7 +109,7 @@ export class CodexiaSidebarProvider implements vscode.WebviewViewProvider {
 
         this._client = new Client(
             {
-                name: "codeagent-vscode",
+                name: "codexia-vscode",
                 version: "1.0.0",
             },
             {
@@ -133,8 +135,8 @@ export class CodexiaSidebarProvider implements vscode.WebviewViewProvider {
 
             console.log("Codexia: Connected and tools loaded.");
         } catch (error) {
-            console.error("CodeAgent Initialization Error:", error);
-            vscode.window.showErrorMessage("Failed to connect to CodeAgent core.");
+            console.error("Codexia Initialization Error:", error);
+            vscode.window.showErrorMessage("Failed to connect to Codexia core.");
         }
     }
 
@@ -152,14 +154,14 @@ export class CodexiaSidebarProvider implements vscode.WebviewViewProvider {
 
         webviewView.webview.html = this._getHtmlForWebview(webviewView.webview);
 
-        webviewView.webview.onDidReceiveMessage(async (data: { type: string; value?: string; message?: string }) => {
+        webviewView.webview.onDidReceiveMessage(async (data: { type: string; value?: string; message?: string; model?: string }) => {
             if (data.type === "user-message" && data.message) {
                 await this._handleUserMessage(data.message);
             } else if (data.type === "clear-history") {
                 this._messages = [
                     {
                         role: "system",
-                        content: `You are CodeAgent, an expert AI coding assistant. You possess a "Agentic" mindset, meaning you are proactive, capable, and autonomous.
+                        content: `You are Codexia, an expert AI coding assistant. You possess a "Agentic" mindset, meaning you are proactive, capable, and autonomous.
 
 **Your Goal**: Help the user solve complex coding tasks, debug issues, and build software.
 
@@ -186,6 +188,9 @@ export class CodexiaSidebarProvider implements vscode.WebviewViewProvider {
                 this._view?.webview.postMessage({ type: "history", messages: [] });
             } else if (data.type === "webview-ready") {
                 this._sendHistoryToView();
+            } else if (data.type === "change-model" && data.model) {
+                this._selectedModel = data.model;
+                console.log("Codexia: Model switched to", this._selectedModel);
             }
         });
     }
@@ -197,7 +202,7 @@ export class CodexiaSidebarProvider implements vscode.WebviewViewProvider {
                 role: m.role,
                 content: m.content
             }));
-            this._view.webview.postMessage({ type: "history", messages: displayMessages });
+            this._view.webview.postMessage({ type: "history", messages: displayMessages, currentModel: this._selectedModel });
         }
     }
 
@@ -226,7 +231,8 @@ export class CodexiaSidebarProvider implements vscode.WebviewViewProvider {
         await this._context.workspaceState.update("chatHistory", this._messages);
 
         try {
-            const model = config.get<string>("model") || "meta-llama/Llama-3.3-70B-Instruct";
+            // Use selected model
+            const model = this._selectedModel;
             let response = await this._openai.chat.completions.create({
                 model: model,
                 messages: this._messages,
@@ -372,10 +378,37 @@ export class CodexiaSidebarProvider implements vscode.WebviewViewProvider {
                     color: var(--vscode-editor-foreground);
                     border-bottom-left-radius: 2px;
                 }
-                .input-container {
-                    padding: 15px;
+                .input-area {
                     border-top: 1px solid var(--vscode-widget-border);
                     background-color: var(--vscode-sideBar-background);
+                    display: flex;
+                    flex-direction: column;
+                }
+                .model-selector-container {
+                    padding: 8px 15px 0 15px;
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                }
+                .model-selector-container label {
+                    font-size: 11px;
+                    opacity: 0.8;
+                }
+                select {
+                    flex: 1;
+                    background-color: var(--vscode-select-background);
+                    color: var(--vscode-select-foreground);
+                    border: 1px solid var(--vscode-select-border);
+                    border-radius: 4px;
+                    padding: 2px 4px;
+                    font-size: 11px;
+                    outline: none;
+                }
+                select:focus {
+                    border-color: var(--vscode-focusBorder);
+                }
+                .input-container {
+                    padding: 10px 15px 15px 15px;
                     display: flex;
                     gap: 10px;
                 }
@@ -488,12 +521,23 @@ export class CodexiaSidebarProvider implements vscode.WebviewViewProvider {
             </div>
             <div id="chat-container">
                 <div class="empty-state">
-                    👋 Bonjour ! Je suis CodeAgent.<br>Comment puis-je vous aider ?
+                    👋 Bonjour ! Je suis Codexia.<br>Comment puis-je vous aider ?
                 </div>
             </div>
-            <div class="input-container">
-                <textarea id="message-input" placeholder="Type a message (Cmd+Enter to send)..."></textarea>
-                <button id="send-btn">➤</button>
+            <div class="input-area">
+                <div class="model-selector-container">
+                    <label for="model-select">Modèle :</label>
+                    <select id="model-select">
+                        <option value="meta-llama/Llama-3.2-1B-Instruct">Llama 3.2 1B (Ultra-Rapide)</option>
+                        <option value="meta-llama/Llama-3.2-3B-Instruct">Llama 3.2 3B (Rapide)</option>
+                        <option value="meta-llama/Llama-3.1-8B-Instruct">Llama 3.1 8B (Équilibré)</option>
+                        <option value="meta-llama/Llama-3.3-70B-Instruct" selected>Llama 3.3 70B (Puissant)</option>
+                    </select>
+                </div>
+                <div class="input-container">
+                    <textarea id="message-input" placeholder="Ecrivez votre message (Cmd+Entrée pour envoyer)..."></textarea>
+                    <button id="send-btn">➤</button>
+                </div>
             </div>
             <script>
                 const vscode = acquireVsCodeApi();
@@ -501,10 +545,15 @@ export class CodexiaSidebarProvider implements vscode.WebviewViewProvider {
                 const messageInput = document.getElementById('message-input');
                 const sendBtn = document.getElementById('send-btn');
                 const newChatBtn = document.getElementById('new-chat-btn');
+                const modelSelect = document.getElementById('model-select');
 
                 // Notify extension that webview is ready to receive history
                 window.addEventListener('load', () => {
                    vscode.postMessage({ type: 'webview-ready' });
+                });
+
+                modelSelect.addEventListener('change', () => {
+                    vscode.postMessage({ type: 'change-model', model: modelSelect.value });
                 });
 
                 function addMessage(role, text) {
@@ -537,9 +586,12 @@ export class CodexiaSidebarProvider implements vscode.WebviewViewProvider {
                              // Clear current view first to avoid duplicates if called multiple times
                             chatContainer.innerHTML = '';
                             if (message.messages.length === 0) {
-                                chatContainer.innerHTML = \`<div class="empty-state">👋 Bonjour ! Je suis CodeAgent.<br>Comment puis-je vous aider ?</div>\`;
+                                chatContainer.innerHTML = \`<div class="empty-state">👋 Bonjour ! Je suis Codexia.<br>Comment puis-je vous aider ?</div>\`;
                             } else {
                                 message.messages.forEach(m => addMessage(m.role, m.content));
+                            }
+                            if (message.currentModel) {
+                                modelSelect.value = message.currentModel;
                             }
                             break;
                         case 'set-input':
@@ -577,7 +629,7 @@ export class CodexiaSidebarProvider implements vscode.WebviewViewProvider {
 
                 // New Chat
                 newChatBtn.addEventListener('click', () => {
-                    chatContainer.innerHTML = \`<div class="empty-state">👋 Bonjour ! Je suis CodeAgent.<br>Comment puis-je vous aider ?</div>\`;
+                    chatContainer.innerHTML = \`<div class="empty-state">👋 Bonjour ! Je suis Codexia.<br>Comment puis-je vous aider ?</div>\`;
                     vscode.postMessage({ type: 'clear-history' });
                 });
             </script>

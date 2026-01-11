@@ -1,0 +1,10 @@
+node_modules
+build
+.env
+*.vsix
+.DS_Store
+.vscode-test
+dist
+out
+package-lock.json
+mcp_config.json

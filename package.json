@@ -1,0 +1,133 @@
+{
+  "name": "codeagent-mcp",
+  "displayName": "CodeAgent",
+  "icon": "media/icon.png",
+  "version": "1.0.0",
+  "description": "AI Coding Assistant with Agentic capabilities (Read/Write/Search files) via MCP.",
+  "publisher": "codeagent",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/codeagent/codeagent-vscode.git"
+  },
+  "categories": [
+    "AI",
+    "Programming Languages",
+    "Machine Learning"
+  ],
+  "main": "build/extension.js",
+  "bin": {
+    "codeagent-mcp": "build/index.js"
+  },
+  "engines": {
+    "vscode": "^1.96.0"
+  },
+  "activationEvents": [],
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "codeagent-sidebar",
+          "title": "CodeAgent",
+          "icon": "media/icon.svg"
+        }
+      ]
+    },
+    "views": {
+      "codeagent-sidebar": [
+        {
+          "type": "webview",
+          "id": "codeagent-view",
+          "name": "Chat",
+          "icon": "media/icon.svg"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "CodeAgent",
+      "properties": {
+        "codeagent.llm.apiKey": {
+          "type": "string",
+          "default": "",
+          "description": "API Key for the LLM Provider (Hugging Face / OpenAI compatible)."
+        },
+        "codeagent.llm.model": {
+          "type": "string",
+          "default": "meta-llama/Llama-3.3-70B-Instruct",
+          "description": "Model ID to use."
+        },
+        "codeagent.llm.baseUrl": {
+          "type": "string",
+          "default": "https://router.huggingface.co/v1",
+          "description": "Base URL for the LLM API."
+        }
+      }
+    },
+    "commands": [
+      {
+        "command": "codeagent.addSelectionToChat",
+        "title": "CodeAgent: Add Selection to Chat"
+      },
+      {
+        "command": "codeagent.addFileToChat",
+        "title": "CodeAgent: Add File to Chat"
+      },
+      {
+        "command": "codeagent.fixDiagnostics",
+        "title": "CodeAgent: Fix Errors/Warnings"
+      }
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "command": "codeagent.addSelectionToChat",
+          "group": "codeagent-group@1",
+          "when": "editorHasSelection"
+        },
+        {
+          "command": "codeagent.fixDiagnostics",
+          "group": "codeagent-group@2"
+        }
+      ],
+      "explorer/context": [
+        {
+          "command": "codeagent.addFileToChat",
+          "group": "codeagent-group@1"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "start": "node build/index.js",
+    "dev": "ts-node-esm src/index.ts",
+    "chat": "npm run build && node build/chat.js",
+    "web": "npm run build && node build/server.js"
+  },
+  "keywords": [
+    "mcp",
+    "coding",
+    "ai",
+    "agent",
+    "tools"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.25.2",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "express": "^4.18.2",
+    "openai": "^6.16.0",
+    "readline": "^1.3.0",
+    "socket.io": "^4.6.1",
+    "zod": "^4.3.5"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/express": "^4.17.21",
+    "@types/node": "^25.0.6",
+    "@types/vscode": "^1.96.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
+  }
+}
